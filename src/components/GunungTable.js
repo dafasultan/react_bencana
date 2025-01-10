@@ -48,11 +48,11 @@ const GunungTable = () => {
   };
 
   return (
-    <div className="relative overflow-x-auto">
+    <div className="relative overflow-x-auto shadow-lg rounded-lg">
       {/* Add the link to navigate to /korban */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Daftar Gunung</h2>
-        <Link to="/korban" className="text-blue-500 hover:text-blue-700">
+      <div className="flex justify-between items-center mb-4 bg-gray-100 p-4 rounded-t-lg">
+        <h2 className="text-2xl font-bold text-gray-700">Daftar Gunung</h2>
+        <Link to="/korban" className="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md transition duration-300">
           Daftar Korban
         </Link>
       </div>
@@ -78,19 +78,19 @@ const GunungTable = () => {
           {gunung.length > 0 ? (
             gunung.map((g) => (
               <tr key={g.id} className="bg-white border-b">
-                <td className="px-6 py-4">{g.name}</td>
+                <td className="px-6 py-4 font-medium text-gray-900">{g.name}</td>
                 <td className="px-6 py-4">{g.ketinggian}</td>
                 <td className="px-6 py-4">{g.lokasi}</td>
                 <td className="px-6 py-4 flex space-x-4">
                   <button
                     onClick={() => openModal(g)}
-                    className="text-yellow-500 hover:text-orange-700"
+                    className="text-yellow-500 hover:text-orange-700 font-semibold transition duration-300"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(g.id)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 hover:text-red-700 font-semibold transition duration-300"
                   >
                     Delete
                   </button>
@@ -99,7 +99,7 @@ const GunungTable = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="px-6 py-4 text-center">
+              <td colSpan="4" className="px-6 py-4 text-center text-gray-500 italic">
                 Tidak ada data gunung
               </td>
             </tr>
