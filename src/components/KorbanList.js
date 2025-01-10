@@ -79,23 +79,32 @@ const KorbanTable = () => {
       <div className="relative overflow-x-auto">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-700">Daftar Korban</h2>
-    
-        {/* Tombol Logout */}
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-700 transition duration-300"
-        >
-          Logout
-        </button>
-      </div>
-    
-      {/* Tombol Add Korban Bencana */}
+        <div className="flex space-x-4">
+      {/* Tombol Daftar Gunung */}
       <button
-        onClick={openAddModal}
-        className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md mb-4 hover:bg-green-700 transition duration-300"
+        onClick={() => window.location.href = "/gunung"}
+        className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
       >
-        Tambah Korban Bencana
+        Daftar Gunung
       </button>
+
+      {/* Tombol Logout */}
+      <button
+        onClick={handleLogout}
+        className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-700 transition duration-300"
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+
+  {/* Tombol Tambah Korban Bencana */}
+  <button
+    onClick={openAddModal}
+    className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md mb-4 hover:bg-green-700 transition duration-300"
+  >
+    Tambah Korban Bencana
+  </button>
     
       <table className="w-full text-sm text-left text-gray-500 bg-white border border-gray-300 rounded-lg overflow-hidden shadow-md">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
