@@ -7,13 +7,8 @@ const GunungTable = () => {
   const dispatch = useDispatch();
   const gunung = useSelector((state) => state.gunung);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [currentGunung, setCurrentGunung] = useState(null);
-  const [newGunung, setNewGunung] = useState({
-    name: '',
-    ketinggian: '',
-    lokasi: '',
-  });
+  const [isAddMode, setIsAddMode] = useState(false);
 
   useEffect(() => {
     dispatch(fetchGunung());
@@ -23,76 +18,58 @@ const GunungTable = () => {
     dispatch(removeGunung(id));
   };
 
-  const openModal = (gunung) => {
+  const openAddModal = () => {
+    setCurrentGunung({ name: '', ketinggian: '', lokasi: '' }); // Empty fields for new entry
+    setIsAddMode(true);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (gunung) => {
     setCurrentGunung(gunung);
+    setIsAddMode(false);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setCurrentGunung(null);
-  };
-
-  const openAddModal = () => {
-    setIsAddModalOpen(true);
-  };
-
-  const closeAddModal = () => {
-    setIsAddModalOpen(false);
-    setNewGunung({
-      name: '',
-      ketinggian: '',
-      lokasi: '',
-    });
-  };
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setCurrentGunung((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleNewInputChange = (event) => {
-    const { name, value } = event.target;
-    setNewGunung((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setIsAddMode(false);
   };
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    await dispatch(editGunung(currentGunung));
+    if (isAddMode) {
+      // Add new gunung
+      await dispatch(createGunung(currentGunung));
+    } else {
+      // Edit existing gunung
+      await dispatch(editGunung(currentGunung));
+    }
     dispatch(fetchGunung());
     closeModal();
   };
 
-  const handleAddFormSubmit = async (event) => {
-    event.preventDefault();
-    await dispatch(createGunung(newGunung));
-    dispatch(fetchGunung());
-    closeAddModal();
+  const handleInputChange = (event) => {
+    setCurrentGunung({
+      ...currentGunung,
+      [event.target.name]: event.target.value,
+    });
   };
 
   return (
     <div className="relative overflow-x-auto shadow-lg rounded-lg">
       <div className="flex justify-between items-center mb-4 bg-gray-100 p-4 rounded-t-lg">
         <h2 className="text-2xl font-bold text-gray-700">Daftar Gunung</h2>
-        <div className="flex space-x-4">
-          <Link
-            to="/korban"
-            className="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md transition duration-300"
-          >
-            Daftar Korban
-          </Link>
+        <div className="space-x-2">
           <button
             onClick={openAddModal}
             className="text-white bg-green-500 hover:bg-green-700 px-4 py-2 rounded-lg shadow-md transition duration-300"
           >
-            Add Data Gunung
+            Add Gunung
           </button>
+          <Link to="/korban" className="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md transition duration-300">
+            Daftar Korban
+          </Link>
         </div>
       </div>
 
@@ -114,7 +91,7 @@ const GunungTable = () => {
                 <td className="px-6 py-4">{g.lokasi}</td>
                 <td className="px-6 py-4 flex space-x-4">
                   <button
-                    onClick={() => openModal(g)}
+                    onClick={() => openEditModal(g)}
                     className="text-yellow-500 hover:text-orange-700 font-semibold transition duration-300"
                   >
                     Edit
@@ -138,19 +115,18 @@ const GunungTable = () => {
         </tbody>
       </table>
 
-      {/* Add Modal */}
-      {isAddModalOpen && (
+      {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg w-96">
-            <h3 className="text-xl font-semibold mb-4">Add Data Gunung</h3>
-            <form onSubmit={handleAddFormSubmit}>
+            <h3 className="text-xl font-semibold mb-4">{isAddMode ? 'Add Gunung' : 'Edit Gunung'}</h3>
+            <form onSubmit={handleFormSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Nama Gunung</label>
                 <input
                   type="text"
                   name="name"
-                  value={newGunung.name}
-                  onChange={handleNewInputChange}
+                  value={currentGunung.name}
+                  onChange={handleInputChange}
                   className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
@@ -159,8 +135,8 @@ const GunungTable = () => {
                 <input
                   type="number"
                   name="ketinggian"
-                  value={newGunung.ketinggian}
-                  onChange={handleNewInputChange}
+                  value={currentGunung.ketinggian}
+                  onChange={handleInputChange}
                   className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
@@ -169,24 +145,24 @@ const GunungTable = () => {
                 <input
                   type="text"
                   name="lokasi"
-                  value={newGunung.lokasi}
-                  onChange={handleNewInputChange}
+                  value={currentGunung.lokasi}
+                  onChange={handleInputChange}
                   className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div className="flex justify-end space-x-4">
                 <button
                   type="button"
-                  onClick={closeAddModal}
+                  onClick={closeModal}
                   className="px-4 py-2 bg-gray-200 rounded-md"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-green-500 text-white rounded-md"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md"
                 >
-                  Simpan
+                  {isAddMode ? 'Tambah' : 'Simpan'}
                 </button>
               </div>
             </form>
